@@ -3,6 +3,7 @@ import BreadcrumbHeader from "@/components/breadcrumb-header";
 import DesktopSidebar from "@/components/desktop-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Separator } from "@/components/ui/separator";
+import { SignedIn, UserButton } from "@clerk/nextjs";
 
 export default function Layout({ children }: React.PropsWithChildren) {
   return (
@@ -11,9 +12,12 @@ export default function Layout({ children }: React.PropsWithChildren) {
       <div className="flex min-h-screen flex-1 flex-col">
         <header className="container flex h-[50px] items-center justify-between px-6 py-4">
           <BreadcrumbHeader />
-          {/* <div className="flex items-center gap-1"> */}
-          <ThemeToggle />
-          {/* </div> */}
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
         </header>
         <Separator />
         <div className="overflow-auto">
