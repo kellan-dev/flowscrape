@@ -10,22 +10,25 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import Link from "next/link";
 
 export default function BreadcrumbHeader() {
   const pathname = usePathname();
   const paths = pathname === "/" ? [""] : pathname.split("/");
 
   return (
-    // TODO: flex-start is not a valid tailwind class; what is this supposed to be?
-    <div className="flex-start flex items-center">
+    <div className="flex items-center">
       <MobileSidebar />
       <Breadcrumb>
         <BreadcrumbList>
           {paths.map((path, index) => (
             <React.Fragment key={index}>
+              {index !== 0 && <BreadcrumbSeparator>/</BreadcrumbSeparator>}
               <BreadcrumbItem>
-                <BreadcrumbLink className="capitalize" href={path}>
-                  {path === "" ? "home" : path}
+                <BreadcrumbLink asChild>
+                  <Link className="capitalize" href={`/${path}`}>
+                    {path === "" ? "home" : path}
+                  </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </React.Fragment>
