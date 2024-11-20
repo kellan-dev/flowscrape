@@ -9,27 +9,15 @@ import ws from "ws";
 
 neonConfig.webSocketConstructor = ws;
 const connectionString = process.env.DATABASE_URL;
-const directConnectionString = process.env.DIRECT_URL;
 
 if (!connectionString) {
   throw new Error("DATABASE_URL is not set");
 }
 
-if (!directConnectionString) {
-  throw new Error("DIRECT_URL is not set");
-}
-
 const prismaClientSingleton = () => {
   const pool = new Pool({ connectionString });
   const adapter = new PrismaNeon(pool);
-  return new PrismaClient({
-    adapter,
-    datasources: {
-      db: {
-        url: directConnectionString,
-      },
-    },
-  });
+  return new PrismaClient({ adapter });
 };
 
 declare global {
