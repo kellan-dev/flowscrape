@@ -1,6 +1,6 @@
 "use server";
 
-import prisma from "@/lib/prisma";
+import prisma from "@/prisma/prisma";
 import {
   createWorkflowSchema,
   createWorkflowSchemaType,
