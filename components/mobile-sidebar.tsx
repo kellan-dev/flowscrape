@@ -12,10 +12,11 @@ import {
 import { Button, buttonVariants } from "./ui/button";
 import { MenuIcon } from "lucide-react";
 import { navigationRoutes } from "@/lib/data";
+import { usePathname } from "next/navigation";
 
 export default function MobileSidebar() {
   const [isOpen, setOpen] = useState(false);
-  const activeRoute = useActiveRoute();
+  const pathname = usePathname();
 
   return (
     <div className="block border-separate bg-background md:hidden">
@@ -39,7 +40,7 @@ export default function MobileSidebar() {
                   href={route.href}
                   className={buttonVariants({
                     variant:
-                      activeRoute.href === route.href
+                      route.href === pathname
                         ? "sidebarActiveItem"
                         : "sidebarItem",
                   })}

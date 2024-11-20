@@ -2,12 +2,12 @@
 
 import Logo from "./logo";
 import Link from "next/link";
-import useActiveRoute from "@/hooks/use-active-route";
 import { buttonVariants } from "./ui/button";
 import { navigationRoutes } from "@/lib/data";
+import { usePathname } from "next/navigation";
 
 export default function DesktopSidebar() {
-  const activeRoute = useActiveRoute();
+  const pathname = usePathname();
 
   return (
     <div className="relative hidden h-screen w-full min-w-[280px] max-w-[280px] border-separate overflow-hidden border-r-2 bg-primary/5 text-muted-foreground dark:bg-secondary/30 dark:text-foreground md:block">
@@ -24,9 +24,7 @@ export default function DesktopSidebar() {
             href={route.href}
             className={buttonVariants({
               variant:
-                activeRoute.href === route.href
-                  ? "sidebarActiveItem"
-                  : "sidebarItem",
+                route.href === pathname ? "sidebarActiveItem" : "sidebarItem",
             })}
           >
             <route.icon size={20} />
