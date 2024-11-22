@@ -3,11 +3,14 @@ import React from "react";
 import prisma from "@/prisma/prisma";
 import Editor from "../../_components/editor";
 
-export default async function EditorPage({
-  params,
-}: {
-  params: { workflowId: string };
-}) {
+type Props = {
+  // Params becomes async in Next 15: Promise<{ workflowId: string }>;
+  params: {
+    workflowId: string;
+  };
+};
+
+export default async function EditorPage({ params }: Props) {
   const { userId } = auth();
   if (!userId) return <div>Not authenticated</div>;
 
