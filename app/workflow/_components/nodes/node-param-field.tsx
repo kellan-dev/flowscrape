@@ -5,6 +5,7 @@ import React, { useCallback } from "react";
 import StringParam from "./param/string-param";
 import { useReactFlow } from "@xyflow/react";
 import { AppNode } from "@/types/app-node";
+import BrowserInstanceParam from "./param/browser-instance-param";
 
 export default function NodeParamField({
   param,
@@ -35,6 +36,14 @@ export default function NodeParamField({
         <StringParam
           param={param}
           value={value}
+          updateNodeParamValue={updateNodeParamValue}
+        />
+      );
+    case TaskParamType.BROWSER_INSTANCE:
+      return (
+        <BrowserInstanceParam
+          param={param}
+          value={""}
           updateNodeParamValue={updateNodeParamValue}
         />
       );
