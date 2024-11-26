@@ -2,7 +2,7 @@
 
 import "@xyflow/react/dist/style.css";
 import { Workflow } from "@prisma/client";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   Background,
   BackgroundVariant,
@@ -15,6 +15,7 @@ import {
 import { createFlowNode } from "@/lib/workflow/create-flow-node";
 import { TaskType } from "@/types/task";
 import NodeComponent from "./nodes/node-component";
+import { AppNode } from "@/types/app-node";
 
 const nodeTypes = {
   FlowScrapeNode: NodeComponent,
@@ -24,9 +25,9 @@ const snapGrid: [number, number] = [16, 16];
 const fitViewOptions = { padding: 1 };
 
 export default function FlowEditor({ workflow }: { workflow: Workflow }) {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { setViewport } = useReactFlow();
+  const { setViewport, screenToFlowPosition } = useReactFlow();
 
   useEffect(() => {
     try {
@@ -46,6 +47,30 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
     }
   }, [workflow.definition, setNodes, setEdges, setViewport]);
 
+  const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }, []);
+
+  const onDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+
+      const taskType = event.dataTransfer.getData("application/reactflow");
+      // TODO: Why the undefined check?
+      if (!taskType || typeof taskType === undefined) return;
+
+      const position = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      const newNode = createFlowNode(taskType as TaskType, position);
+      setNodes((nds) => nds.concat(newNode));
+    },
+    [screenToFlowPosition, setNodes],
+  );
+
   return (
     <main className="h-full w-full">
       <ReactFlow
@@ -58,6 +83,8 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
         snapGrid={snapGrid}
         // fitView
         fitViewOptions={fitViewOptions}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
       >
         <Controls position="top-left" fitViewOptions={fitViewOptions} />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
