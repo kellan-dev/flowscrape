@@ -10,6 +10,7 @@ import {
   Connection,
   Controls,
   Edge,
+  getOutgoers,
   ReactFlow,
   useEdgesState,
   useNodesState,
@@ -20,6 +21,7 @@ import { TaskType } from "@/types/task";
 import NodeComponent from "./nodes/node-component";
 import { AppNode } from "@/types/app-node";
 import DeletableEdge from "./edges/deletable-edge";
+import { TaskRegistry } from "@/lib/workflow/task/registry";
 
 const nodeTypes = {
   FlowScrapeNode: NodeComponent,
@@ -35,7 +37,7 @@ const fitViewOptions = { padding: 1 };
 export default function FlowEditor({ workflow }: { workflow: Workflow }) {
   const [nodes, setNodes, onNodesChange] = useNodesState<AppNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
-  const { setViewport, screenToFlowPosition } = useReactFlow();
+  const { setViewport, screenToFlowPosition, updateNodeData } = useReactFlow();
 
   useEffect(() => {
     try {
@@ -82,8 +84,65 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
   const onConnect = useCallback(
     (connection: Connection) => {
       setEdges((eds) => addEdge({ ...connection, animated: true }, eds));
+      if (!connection.targetHandle) return;
+
+      // Remove input value if present on connection
+      const node = nodes.find((n) => n.id === connection.target);
+      if (!node) return;
+
+      const nodeInputs = node.data.inputs;
+      updateNodeData(node.id, {
+        inputs: {
+          ...nodeInputs,
+          [connection.targetHandle]: "",
+        },
+      });
     },
-    [setEdges],
+    [updateNodeData, nodes, setEdges],
+  );
+
+  const isValidConnection = useCallback(
+    (connection: Edge | Connection) => {
+      // A node can't connect to itself
+      if (connection.source === connection.target) return false;
+
+      // A node can't connect to a node of a different type
+      const source = nodes.find((node) => node.id === connection.source);
+      const target = nodes.find((node) => node.id === connection.target);
+      if (!source || !target) {
+        console.error("Invalid Connection: Source or target node not found");
+        return false;
+      }
+      const sourceTask = TaskRegistry[source.data.type];
+      const targetTask = TaskRegistry[target.data.type];
+      const sourceInput = sourceTask.inputs.find(
+        (input) => input.name === connection.sourceHandle,
+      );
+      const targetOutput = targetTask.outputs.find(
+        (output) => output.name === connection.targetHandle,
+      );
+
+      if (sourceInput?.type !== targetOutput?.type) {
+        console.error("Invalid Connection: Types do not match");
+        return false;
+      }
+
+      // A node can't connect if it would create a cycle (loop)
+      const hasCycle = (node: AppNode, visited = new Set()) => {
+        if (visited.has(node.id)) return false;
+        visited.add(node.id);
+
+        for (const outgoer of getOutgoers(node, nodes, edges)) {
+          if (outgoer.id === connection.source) return true;
+          if (hasCycle(outgoer, visited)) return true;
+        }
+      };
+
+      const detectedCycle = hasCycle(target);
+
+      return !detectedCycle;
+    },
+    [nodes, edges],
   );
 
   return (
@@ -102,6 +161,7 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
         onDragOver={onDragOver}
         onDrop={onDrop}
         onConnect={onConnect}
+        isValidConnection={isValidConnection}
       >
         <Controls position="top-left" fitViewOptions={fitViewOptions} />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Logo from "./logo";
-import useActiveRoute from "@/hooks/use-active-route";
 import { useState } from "react";
 import {
   Sheet,

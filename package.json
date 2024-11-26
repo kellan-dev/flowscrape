@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "prod": "next build && next start",
     "lint": "next lint",
+    "type": "tsc --noEmit",
     "postinstall": "prisma generate"
   },
   "dependencies": {
