@@ -6,6 +6,7 @@ import { ChevronLeftIcon, Router } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import SaveBtn from "./save-btn";
+import ExecuteBtn from "./execute-btn";
 
 export default function Topbar({
   title,
@@ -35,6 +36,7 @@ export default function Topbar({
         </div>
       </div>
       <div className="flex flex-1 justify-end gap-1">
+        <ExecuteBtn workflowId={workflowId} />
         <SaveBtn workflowId={workflowId} />
       </div>
     </header>

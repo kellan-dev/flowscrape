@@ -104,7 +104,10 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
   const isValidConnection = useCallback(
     (connection: Edge | Connection) => {
       // A node can't connect to itself
-      if (connection.source === connection.target) return false;
+      if (connection.source === connection.target) {
+        console.error("Invalid Connection: Source and target are the same");
+        return false;
+      }
 
       // A node can't connect to a node of a different type
       const source = nodes.find((node) => node.id === connection.source);
@@ -113,16 +116,23 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
         console.error("Invalid Connection: Source or target node not found");
         return false;
       }
+
       const sourceTask = TaskRegistry[source.data.type];
       const targetTask = TaskRegistry[target.data.type];
-      const sourceInput = sourceTask.inputs.find(
-        (input) => input.name === connection.sourceHandle,
+
+      const sourceOutput = sourceTask.outputs.find(
+        (output) => output.name === connection.sourceHandle,
       );
-      const targetOutput = targetTask.outputs.find(
-        (output) => output.name === connection.targetHandle,
+      const targetInput = targetTask.inputs.find(
+        (input) => input.name === connection.targetHandle,
       );
 
-      if (sourceInput?.type !== targetOutput?.type) {
+      if (!sourceOutput || !targetInput) {
+        console.error("Invalid Connection: Input or output not found");
+        return false;
+      }
+
+      if (sourceOutput?.type !== targetInput?.type) {
         console.error("Invalid Connection: Types do not match");
         return false;
       }
