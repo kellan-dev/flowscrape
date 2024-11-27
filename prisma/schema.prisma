@@ -42,17 +42,17 @@ model WorkflowExecution {
 }
 
 model ExecutionPhase {
-  id          String    @id @default(cuid())
-  userId      String
-  status      String
-  number      Int
-  node        String
-  name        String
-  startedAt   DateTime?
-  completedAt DateTime?
-  inputs      String?
-  outputs     String?
-  creditsCost Int?
+  id              String    @id @default(cuid())
+  userId          String
+  status          String
+  number          Int
+  node            String
+  name            String
+  startedAt       DateTime?
+  completedAt     DateTime?
+  inputs          String?
+  outputs         String?
+  creditsConsumed Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

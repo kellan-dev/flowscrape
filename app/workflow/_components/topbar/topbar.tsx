@@ -12,10 +12,12 @@ export default function Topbar({
   title,
   subtitle,
   workflowId,
+  hideButtons = false,
 }: {
   title: string;
   subtitle?: string;
   workflowId: string;
+  hideButtons?: boolean;
 }) {
   const router = useRouter();
   return (
@@ -36,8 +38,12 @@ export default function Topbar({
         </div>
       </div>
       <div className="flex flex-1 justify-end gap-1">
-        <ExecuteBtn workflowId={workflowId} />
-        <SaveBtn workflowId={workflowId} />
+        {!hideButtons && (
+          <>
+            <ExecuteBtn workflowId={workflowId} />
+            <SaveBtn workflowId={workflowId} />
+          </>
+        )}
       </div>
     </header>
   );

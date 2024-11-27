@@ -10,6 +10,7 @@ import {
 } from "@/types/workflow";
 import { flowToExecutionPlan } from "@/lib/workflow/flow-to-execution-plan";
 import { TaskRegistry } from "@/lib/workflow/task/registry";
+import { redirect } from "next/navigation";
 
 export default async function runWorkflow(form: {
   workflowId: string;
@@ -71,4 +72,6 @@ export default async function runWorkflow(form: {
   });
 
   if (!execution) throw new Error("Failed to create workflow execution");
+
+  redirect(`/workflow/runs/${workflowId}/${execution.id}`);
 }
