@@ -10,8 +10,15 @@ export default async function getWorkflowPhaseDetails(phaseId: string) {
   return prisma.executionPhase.findUnique({
     where: {
       id: phaseId,
-      execution: {
+      workflowExecution: {
         userId,
+      },
+    },
+    include: {
+      executionLogs: {
+        orderBy: {
+          timestamp: "asc",
+        },
       },
     },
   });
