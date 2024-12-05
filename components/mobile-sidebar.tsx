@@ -12,6 +12,7 @@ import { Button, buttonVariants } from "./ui/button";
 import { MenuIcon } from "lucide-react";
 import { navigationRoutes } from "@/lib/data";
 import { usePathname } from "next/navigation";
+import AvailableCreditsBadge from "./available-credits-badge";
 
 export default function MobileSidebar() {
   const [isOpen, setOpen] = useState(false);
@@ -32,6 +33,7 @@ export default function MobileSidebar() {
               Access different sections of FlowScrape
             </SheetDescription>
             <Logo />
+            <AvailableCreditsBadge />
             <div className="flex flex-col gap-1">
               {navigationRoutes.map((route) => (
                 <Link

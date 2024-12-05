@@ -5,6 +5,7 @@ import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import { navigationRoutes } from "@/lib/data";
 import { usePathname } from "next/navigation";
+import AvailableCreditsBadge from "./available-credits-badge";
 
 export default function DesktopSidebar() {
   const pathname = usePathname();
@@ -14,7 +15,9 @@ export default function DesktopSidebar() {
       <div className="flex border-separate items-center justify-center gap-2 border-b-[1px] p-4">
         <Logo />
       </div>
-      <div className="p-2">TODO CREDITS</div>
+      <div className="p-2">
+        <AvailableCreditsBadge />
+      </div>
       <div className="flex flex-col p-2">
         {navigationRoutes.map((route) => (
           // Link styled to look like a Button via the buttonVariants cva function.
