@@ -9,6 +9,7 @@ import SaveBtn from "./save-btn";
 import ExecuteBtn from "./execute-btn";
 import NavigationTabs from "./navigation-tabs";
 import PublishBtn from "./publish-btn";
+import UnpublishBtn from "./unpublish-btn";
 
 export default function Topbar({
   title,
@@ -46,6 +47,7 @@ export default function Topbar({
         {!hideButtons && (
           <>
             <ExecuteBtn workflowId={workflowId} />
+            {isPublished && <UnpublishBtn workflowId={workflowId} />}
             {!isPublished && (
               <>
                 <SaveBtn workflowId={workflowId} />
