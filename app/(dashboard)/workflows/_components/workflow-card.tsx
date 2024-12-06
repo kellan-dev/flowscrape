@@ -3,11 +3,16 @@
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { WorkflowStatus } from "@/types/workflow";
+import { WorkflowExecutionStatus, WorkflowStatus } from "@/types/workflow";
 import { Workflow } from "@prisma/client";
 import {
+  ChevronRightIcon,
+  ClockIcon,
+  CoinsIcon,
+  CornerDownRightIcon,
   FileTextIcon,
   MoreVerticalIcon,
+  MoveRightIcon,
   PlayIcon,
   ShuffleIcon,
   TrashIcon,
@@ -25,6 +30,13 @@ import {
 import TooltipWrapper from "@/components/tooltip-wrapper";
 import DeleteWorkflowDialog from "./delete-workflow-dialog";
 import RunBtn from "./run-btn";
+import SchedulerDialog from "./scheduler-dialog";
+import { Badge } from "@/components/ui/badge";
+import ExecutionStatusIndicator, {
+  ExecutionStatusLabel,
+} from "@/app/workflow/runs/[workflowId]/_components/execution-status-indicator";
+import { format, formatDistanceToNow } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 
 const statusColors = {
   [WorkflowStatus.DRAFT]: "bg-yellow-400 text-yellow-600",
@@ -49,7 +61,7 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
               <PlayIcon className="size-5 text-white" />
             )}
           </div>
-          <div className="">
+          <div>
             <h3 className="flex items-center text-base font-bold text-muted-foreground">
               <Link
                 href={`/workflow/editor/${workflow.id}`}
@@ -63,6 +75,12 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
                 </span>
               )}
             </h3>
+            <ScheduleSection
+              isDraft={isDraft}
+              creditsCost={workflow.creditsCost}
+              workflowId={workflow.id}
+              cron={workflow.cron}
+            />
           </div>
         </div>
         <div className="flex items-center space-x-2">
@@ -85,6 +103,7 @@ export default function WorkflowCard({ workflow }: { workflow: Workflow }) {
           />
         </div>
       </CardContent>
+      <LastRunDetails workflow={workflow} />
     </Card>
   );
 }
@@ -128,5 +147,89 @@ function WorkflowActions({
         </DropdownMenuContent>
       </DropdownMenu>
     </>
+  );
+}
+
+function ScheduleSection({
+  isDraft,
+  creditsCost,
+  workflowId,
+  cron,
+}: {
+  isDraft: boolean;
+  creditsCost: number;
+  workflowId: string;
+  cron: string | null;
+}) {
+  if (isDraft) return null;
+
+  return (
+    <div className="flex items-center gap-2">
+      <CornerDownRightIcon className="size-4 text-muted-foreground" />
+      <SchedulerDialog
+        workflowId={workflowId}
+        cron={cron}
+        key={`${cron}-${workflowId}`}
+      />
+      <MoveRightIcon className="size-4 text-muted-foreground" />
+      <TooltipWrapper content="Credit consumption for full run">
+        <div className="flex items-center gap-3">
+          <Badge
+            variant="outline"
+            className="space-x-2 rounded-sm text-muted-foreground"
+          >
+            <CoinsIcon className="size-4" />
+            <span className="text-sm">{creditsCost}</span>
+          </Badge>
+        </div>
+      </TooltipWrapper>
+    </div>
+  );
+}
+
+function LastRunDetails({ workflow }: { workflow: Workflow }) {
+  const isDraft = workflow.status === WorkflowStatus.DRAFT;
+  if (isDraft) return null;
+
+  const { lastRunAt, lastRunStatus, lastRunId, nextRunAt } = workflow;
+  const formattedStartedAt =
+    lastRunAt && formatDistanceToNow(lastRunAt, { addSuffix: true });
+  const nextSchedule = nextRunAt && format(nextRunAt, "yyyy-MM-dd HH:mm");
+  const nextScheduleUTC =
+    nextRunAt && formatInTimeZone(nextRunAt, "UTC", "HH:mm");
+
+  return (
+    <div className="flex items-center justify-between bg-primary/5 px-4 py-1 text-muted-foreground">
+      <div className="flex items-center gap-2 text-sm">
+        {lastRunAt && (
+          <Link
+            href={`/workflow/runs/${workflow.id}/${lastRunId}`}
+            className="group flex items-center gap-2 text-sm"
+          >
+            <span>Last run:</span>
+            <ExecutionStatusIndicator
+              status={lastRunStatus as WorkflowExecutionStatus}
+            />
+            <ExecutionStatusLabel
+              status={lastRunStatus as WorkflowExecutionStatus}
+            />
+            <span>{formattedStartedAt}</span>
+            <ChevronRightIcon
+              size={14}
+              className="-translate-x-[2px] transition group-hover:translate-x-0"
+            />
+          </Link>
+        )}
+        {!lastRunAt && <p>No runs have been triggered yet</p>}
+      </div>
+      {nextRunAt && (
+        <div className="flex items-center gap-2 text-sm">
+          <ClockIcon size={12} />
+          <span>Next run:</span>
+          <span>{nextSchedule}</span>
+          <span className="text-xs">({nextScheduleUTC} UTC)</span>
+        </div>
+      )}
+    </div>
   );
 }

@@ -17,7 +17,7 @@ import { LogCollector } from "@/types/log";
 import { createLogCollector } from "../log";
 import { sleep } from "../utils";
 
-export async function executeWorkflow(executionId: string) {
+export async function executeWorkflow(executionId: string, nextRunAt?: Date) {
   const execution = await prisma.workflowExecution.findUnique({
     where: {
       id: executionId,
@@ -36,7 +36,11 @@ export async function executeWorkflow(executionId: string) {
   const environment: Environment = { phases: {} };
 
   // initialize workflow execution
-  await initializeWorkflowExecution(executionId, execution.workflowId);
+  await initializeWorkflowExecution(
+    executionId,
+    execution.workflowId,
+    nextRunAt,
+  );
 
   // initialize phase status
   await initializePhaseStatus(execution);
@@ -75,6 +79,7 @@ export async function executeWorkflow(executionId: string) {
 async function initializeWorkflowExecution(
   executionId: string,
   workflowId: string,
+  nextRunAt?: Date,
 ) {
   await prisma.workflowExecution.update({
     where: {
@@ -94,6 +99,7 @@ async function initializeWorkflowExecution(
       lastRunAt: new Date(),
       lastRunStatus: WorkflowExecutionStatus.RUNNING,
       lastRunId: executionId,
+      ...(nextRunAt && { nextRunAt }),
     },
   });
 }
