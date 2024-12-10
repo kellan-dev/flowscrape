@@ -52,6 +52,8 @@ export default function CreateCredentialDialog({
       toast.success("Credential created successfully!", {
         id: "create-credential",
       });
+      form.reset();
+      setIsOpen(false);
     },
     onError: () => {
       toast.error("Failed to create credential", {
@@ -71,13 +73,7 @@ export default function CreateCredentialDialog({
   );
 
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(open) => {
-        form.reset();
-        setIsOpen(open);
-      }}
-    >
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4" />
