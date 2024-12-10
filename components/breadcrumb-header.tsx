@@ -23,7 +23,7 @@ export default function BreadcrumbHeader() {
         <BreadcrumbList>
           {paths.map((path, index) => (
             <React.Fragment key={index}>
-              {index !== 0 && <BreadcrumbSeparator>/</BreadcrumbSeparator>}
+              {index !== 0 && <BreadcrumbSeparator />}
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
                   <Link className="capitalize" href={`/${path}`}>
