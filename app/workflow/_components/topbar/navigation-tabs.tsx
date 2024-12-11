@@ -11,16 +11,16 @@ export default function NavigationTabs({ workflowId }: { workflowId: string }) {
   return (
     <Tabs value={active} className="w-[400px]">
       <TabsList className="grid w-full grid-cols-2">
-        <Link href={`/workflow/editor/${workflowId}`}>
-          <TabsTrigger value="editor" className="w-full">
+        <TabsTrigger value="editor" asChild>
+          <Link href={`/workflow/editor/${workflowId}`} className="w-full">
             Editor
-          </TabsTrigger>
-        </Link>
-        <Link href={`/workflow/runs/${workflowId}`}>
-          <TabsTrigger value="runs" className="w-full">
+          </Link>
+        </TabsTrigger>
+        <TabsTrigger value="runs" asChild>
+          <Link href={`/workflow/runs/${workflowId}`} className="w-full">
             Runs
-          </TabsTrigger>
-        </Link>
+          </Link>
+        </TabsTrigger>
       </TabsList>
     </Tabs>
   );
