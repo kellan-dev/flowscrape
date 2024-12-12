@@ -17,7 +17,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-
 import { ChartColumnStackedIcon } from "lucide-react";
 
 type ChartData = Awaited<ReturnType<typeof getWorkflowExecutionStats>>;

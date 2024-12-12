@@ -10,7 +10,6 @@ import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
 import { Layers2Icon, Loader2, Plus } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,

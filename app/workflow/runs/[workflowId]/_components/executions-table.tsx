@@ -12,7 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { datesToDurationString } from "@/lib/utils";
-import { getPhasesTotalCost } from "@/lib/phases";
 import { Badge } from "@/components/ui/badge";
 import ExecutionStatusIndicator from "./execution-status-indicator";
 import { WorkflowExecutionStatus } from "@/types/workflow";

@@ -9,7 +9,7 @@ import {
   duplicateWorkflowSchema,
 } from "@/schemas/workflow";
 import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
-import { CopyIcon, Layers2Icon, Loader2, Plus } from "lucide-react";
+import { CopyIcon, Layers2Icon, Loader2 } from "lucide-react";
 import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

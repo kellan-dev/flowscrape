@@ -5,9 +5,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogHeader,
   DialogFooter,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { CalendarIcon, ClockIcon, TriangleAlertIcon } from "lucide-react";

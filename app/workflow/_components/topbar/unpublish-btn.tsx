@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
-import { DownloadIcon, UploadIcon } from "lucide-react";
+import { DownloadIcon } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 import { unpublishWorkflow } from "@/actions/workflows/unpublish-workflow";
