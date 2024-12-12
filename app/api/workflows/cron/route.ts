@@ -2,6 +2,8 @@ import { WorkflowStatus } from "@/types/workflow";
 import prisma from "@/prisma/prisma";
 import { getAppUrl } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   const now = new Date();
 
@@ -33,6 +35,7 @@ function triggerWorkflow(workflowId: string) {
       Authorization: `Bearer ${process.env.CRON_SECRET_KEY!}`,
     },
     cache: "no-store",
+    next: { revalidate: 0 },
   }).catch((error) =>
     console.error("Failed to trigger workflow", workflowId, ":", error),
   );

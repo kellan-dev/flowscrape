@@ -4,6 +4,8 @@ import { getWorkflowExecutions } from "@/actions/workflows/get-workflow-executio
 import { InboxIcon, Loader2Icon } from "lucide-react";
 import ExecutionsTable from "./_components/executions-table";
 
+export const dynamic = "force-dynamic";
+
 export default function ExecutionsPage({
   params,
 }: {

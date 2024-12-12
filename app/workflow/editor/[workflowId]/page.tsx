@@ -3,6 +3,8 @@ import React from "react";
 import prisma from "@/prisma/prisma";
 import Editor from "../../_components/editor";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   // Params becomes async in Next 15: Promise<{ workflowId: string }>;
   params: {

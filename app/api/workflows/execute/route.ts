@@ -10,6 +10,8 @@ import { TaskRegistry } from "@/lib/workflow/task/registry";
 import { executeWorkflow } from "@/lib/workflow/execute-workflow";
 import parser from "cron-parser";
 
+export const dynamic = "force-dynamic";
+
 function isValidSecret(secret: string) {
   const CRON_SECRET_KEY = process.env.CRON_SECRET_KEY;
   if (!CRON_SECRET_KEY) return false;
