@@ -19,12 +19,12 @@ export async function POST(request: Request) {
         handleCheckoutSessionCompleted(event.data.object);
         break;
       default:
-        break;
+        console.log(`Unhandled event type: ${event.type}`);
     }
 
     return new NextResponse(null, { status: 200 });
   } catch (error) {
     console.error("Stripe webhook error:", error);
-    return new NextResponse("webhook error", { status: 400 });
+    return new NextResponse("Webhook error", { status: 400 });
   }
 }
