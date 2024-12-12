@@ -22,6 +22,7 @@ import NodeComponent from "./nodes/node-component";
 import { AppNode } from "@/types/app-node";
 import DeletableEdge from "./edges/deletable-edge";
 import { TaskRegistry } from "@/lib/workflow/task/registry";
+import { AlertTriangleIcon } from "lucide-react";
 
 const nodeTypes = {
   FlowScrapeNode: NodeComponent,
@@ -158,6 +159,7 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
   return (
     <main className="h-full w-full">
       <ReactFlow
+        className="relative"
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
@@ -175,6 +177,25 @@ export default function FlowEditor({ workflow }: { workflow: Workflow }) {
       >
         <Controls position="top-left" fitViewOptions={fitViewOptions} />
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+        <div className="absolute left-14 top-4 z-10 mr-4 flex flex-col gap-4 rounded-md border-2 border-red-800/50 bg-red-500/40 px-4 py-2">
+          <div className="flex items-center gap-4">
+            <AlertTriangleIcon size={24} className="flex-shrink-0" />
+            <div className="flex flex-col gap-2">
+              <p className="text-sm">
+                Execution of workflows is currently not working as expected due
+                to an issue running Puppeteer on Vercel. See issue below for
+                more details.
+              </p>
+              <a
+                className="text-xs text-muted-foreground hover:underline"
+                href="https://github.com/orgs/vercel/discussions/3074"
+                target="_blank"
+              >
+                https://github.com/orgs/vercel/discussions/3074
+              </a>
+            </div>
+          </div>
+        </div>
       </ReactFlow>
     </main>
   );
