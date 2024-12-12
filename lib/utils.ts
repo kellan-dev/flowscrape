@@ -1,5 +1,6 @@
+import { Period } from "@/types/analytics";
 import { clsx, type ClassValue } from "clsx";
-import { intervalToDuration } from "date-fns";
+import { endOfMonth, intervalToDuration, startOfMonth } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -32,4 +33,10 @@ export function datesToDurationString(
 export function getAppUrl(path: string) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
   return `${appUrl}${path}`;
+}
+
+export function periodToDateRange(period: Period) {
+  const startDate = startOfMonth(new Date(period.year, period.month, 1));
+  const endDate = endOfMonth(new Date(period.year, period.month, 1));
+  return { startDate, endDate };
 }
